@@ -1,21 +1,13 @@
 package edu.otus.spring02.domain;
 
-public class Author {
+public class Genre {
     private int id;
     private String name;
 
-    public Author() {
+    public Genre() {
     }
 
-    public Author(String name) {
-        this.name = name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
+    public Genre(String name) {
         this.name = name;
     }
 
@@ -27,9 +19,17 @@ public class Author {
         return name;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "Author{" +
+        return "Genre{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

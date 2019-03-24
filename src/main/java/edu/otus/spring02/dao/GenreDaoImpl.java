@@ -1,7 +1,6 @@
 package edu.otus.spring02.dao;
 
-import edu.otus.spring02.domain.Author;
-import org.springframework.dao.DataAccessException;
+import edu.otus.spring02.domain.Genre;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,38 +12,38 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class AuthorDaoImpl implements AuthorDao {
+public class GenreDaoImpl implements GenreDao {
     private final NamedParameterJdbcOperations jdbcOp;
-    private final RowMapper<Author> mapper = (rs, i) -> {
-        Author author = new Author();
-        author.setId(rs.getInt("id"));
-        author.setName(rs.getString("name"));
-        return author;
+    private final RowMapper<Genre> mapper = (rs, i) -> {
+        Genre genre = new Genre();
+        genre.setId(rs.getInt("id"));
+        genre.setName(rs.getString("name"));
+        return genre;
     };
 
-    public AuthorDaoImpl(NamedParameterJdbcOperations jdbcOp) {
+    public GenreDaoImpl(NamedParameterJdbcOperations jdbcOp) {
         this.jdbcOp = jdbcOp;
     }
 
     @Override
-    public List<Author> getAuthors() {
-        return jdbcOp.getJdbcOperations().query("select id, `name` from author order by id asc", mapper);
+    public List<Genre> getGenres() {
+        return jdbcOp.getJdbcOperations().query("select id, `name` from genre order by id asc", mapper);
     }
 
     @Override
-    public Optional<Author> getAuthor(int id) {
+    public Optional<Genre> getGenre(int id) {
         try {
-            return Optional.of(jdbcOp.queryForObject("select id, `name` from author where id = :id", new MapSqlParameterSource().addValue("id", id),  mapper));
+            return Optional.of(jdbcOp.queryForObject("select id, `name` from genre where id = :id", new MapSqlParameterSource().addValue("id", id), mapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
     @Override
-    public int createAuthor(Author prototype) {
+    public int createGenre(Genre prototype) {
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcOp.update(
-                "insert into author (`name`) values (:name)",
+                "insert into genre (`name`) values (:name)",
                 new MapSqlParameterSource()
                         .addValue("name", prototype.getName()),
                 keyHolder);
