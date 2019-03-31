@@ -7,24 +7,18 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-@Component
-public class BookDaoImpl implements BookDao {
-    private final NamedParameterJdbcOperations jdbcOp;
-    private final RowMapper<Book> mapper = (rs, i) -> {
-        Book book = new Book();
-        book.setId(rs.getInt("id"));
-        book.setName(rs.getString("name"));
-        book.setAuthorId(rs.getInt("author_id"));
-        book.setGenreId(rs.getInt("genre_id"));
-        return book;
-    };
+@Repository
+public class BookRepositoryImpl implements BookRepository {
+    private final EntityManager em;
 
-    public BookDaoImpl(NamedParameterJdbcOperations jdbcOp) {
-        this.jdbcOp = jdbcOp;
+    public BookRepositoryImpl(EntityManager em) {
+        this.em = em;
     }
 
     @Override

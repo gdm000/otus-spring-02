@@ -1,59 +1,24 @@
 package edu.otus.spring02.domain;
 
+import lombok.Data;
+
+import javax.persistence.*;
+
+@Entity
+@Data
 public class Book {
-    private int id;
-    private String name;
-    private int genreId;
-    private int authorId;
+    @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="BOOK_SEQ")
+    private final int id;
 
-    public Book(String name, int genreId, int authorId) {
-        this.name = name;
-        this.genreId = genreId;
-        this.authorId = authorId;
-    }
+    @Column(name = "name")
+    private final String name;
 
-    public Book() {
-    }
+    @OneToMany
+    @JoinColumn(name = "genre_id")
+    private final Genre genre;
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getGenreId() {
-        return genreId;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setGenreId(int genreId) {
-        this.genreId = genreId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
-    }
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", genreId=" + genreId +
-                ", authorId=" + authorId +
-                '}';
-    }
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private final Author author;
 }

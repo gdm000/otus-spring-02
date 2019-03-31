@@ -1,16 +1,13 @@
 package edu.otus.spring02;
 
-import edu.otus.spring02.Application;
 import edu.otus.spring02.cli.Commands;
-import edu.otus.spring02.dao.AuthorDao;
-import edu.otus.spring02.dao.BookDao;
+import edu.otus.spring02.dao.AuthorRepository;
+import edu.otus.spring02.dao.BookRepository;
 import edu.otus.spring02.dao.GenreDao;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
 import org.springframework.test.context.jdbc.Sql;
@@ -29,9 +26,9 @@ import static org.assertj.core.api.Assertions.*;
         @ExtendWith(SpringExtension.class)
 public class ApplicationTest {
     @Autowired
-    BookDao bookDao;
+    BookRepository bookRepository;
     @Autowired
-    AuthorDao authorDao;
+    AuthorRepository authorRepository;
     @Autowired
     GenreDao genreDao;
 
@@ -39,7 +36,7 @@ public class ApplicationTest {
 
     @PostConstruct
     public void before() {
-        commands = new Commands(authorDao, bookDao, genreDao);
+        commands = new Commands(authorRepository, bookRepository, genreDao);
     }
 
 

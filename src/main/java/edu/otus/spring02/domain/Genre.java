@@ -1,37 +1,20 @@
 package edu.otus.spring02.domain;
 
+import lombok.Data;
+
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Data
 public class Genre {
+    @Id
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="GENRE_SEQ")
     private int id;
+
+    @Column(name = "name")
     private String name;
 
-    public Genre() {
-    }
-
-    public Genre(String name) {
-        this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Genre{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
+    @OneToMany(mappedBy = "genre")
+    private List<Book> books;
 }
