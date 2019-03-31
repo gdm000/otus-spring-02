@@ -1,6 +1,7 @@
 package edu.otus.spring02.dao;
 
 import edu.otus.spring02.domain.Author;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,13 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class AuthorRepositoryImpl implements AuthorRepository {
 
     private final EntityManager em;
-
-    public AuthorRepositoryImpl(EntityManager em) {
-        this.em = em;
-    }
 
     @Override
     public List<Author> getAuthors() {

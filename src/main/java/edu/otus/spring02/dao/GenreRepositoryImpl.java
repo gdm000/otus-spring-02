@@ -1,6 +1,6 @@
 package edu.otus.spring02.dao;
 
-import edu.otus.spring02.domain.Book;
+import edu.otus.spring02.domain.Genre;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -10,21 +10,22 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class BookRepositoryImpl implements BookRepository {
+public class GenreRepositoryImpl implements GenreRepository {
     private final EntityManager em;
 
     @Override
-    public List<Book> getBooks() {
-        return em.createQuery("select b from Book b order by b.id", Book.class).getResultList();
+    public List<Genre> getGenres() {
+        return em.createQuery("select g from Genre g order by g.id", Genre.class).getResultList();
     }
 
     @Override
-    public Optional<Book> getBook(int id) {
-            return Optional.of(em.find(Book.class, id));
+    public Optional<Genre> getGenre(int id) {
+            return Optional.of(em.find(Genre.class, id));
+
     }
 
     @Override
-    public int createBook(Book prototype) {
+    public int createGenre(Genre prototype) {
         em.persist(prototype);
         return prototype.getId();
     }

@@ -1,43 +1,42 @@
 package edu.otus.spring02.cli;
 
-import edu.otus.spring02.dao.AuthorRepository;
-import edu.otus.spring02.dao.BookRepository;
-import edu.otus.spring02.dao.GenreDao;
 import edu.otus.spring02.domain.Author;
 import edu.otus.spring02.domain.Book;
+import edu.otus.spring02.domain.Comment;
 import edu.otus.spring02.domain.Genre;
+import edu.otus.spring02.service.OperationsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @ShellComponent
+@RequiredArgsConstructor
 public class Commands {
 
-    private final AuthorRepository authorRepository;
-    private final BookRepository bookRepository;
-    private final GenreDao genreDao;
+    private final OperationsService opService;
 
     public static final String CMD_AUTHOR = "author";
     public static final String CMD_BOOK = "book";
     public static final String CMD_GENRE = "genre";
-
-    public Commands(AuthorRepository authorRepository, BookRepository bookRepository, GenreDao genreDao) {
-        this.authorRepository = authorRepository;
-        this.bookRepository = bookRepository;
-        this.genreDao = genreDao;
-    }
+    public static final String CMD_COMMENT = "comment";
 
     @ShellMethod("list available entities")
-    public List<String> list(@ShellOption String entity) {
+    public List<String> list(@ShellOption String entity, @ShellOption(defaultValue = "") String subsetId) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
-            return authorRepository.getAuthors().stream().map(Object::toString).collect(Collectors.toList());
+            return opService.getAuthors(Object::toString);
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
-            return genreDao.getGenres().stream().map(Object::toString).collect(Collectors.toList());
+            return opService.getGenres(Object::toString);
         } else if (CMD_BOOK.equalsIgnoreCase(entity)) {
-            return bookRepository.getBooks().stream().map(Object::toString).collect(Collectors.toList());
+            return opService.getBooks(Object::toString);
+        } else if (CMD_COMMENT.equalsIgnoreCase(entity)) {
+            if (subsetId.isEmpty()) {
+                return opService.getComments(Object::toString);
+            } else {
+                return opService.getComments(Integer.parseInt(subsetId), Object::toString);
+            }
         } else {
             throw new IllegalArgumentException("Unknown entity: "+entity);
         }
@@ -46,28 +45,35 @@ public class Commands {
     @ShellMethod("get entity")
     public String get(@ShellOption String entity, @ShellOption int id) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
-            return authorRepository.getAuthor(id).map(Author::toString).orElse("Not found");
+            return opService.getAuthor(id, Author::toString).orElse("Not found");
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
-            return genreDao.getGenre(id).map(Genre::toString).orElse("Not found");
+            return opService.getGenre(id, Genre::toString).orElse("Not found");
         } else if (CMD_BOOK.equalsIgnoreCase(entity)) {
-            return bookRepository.getBook(id).map(Book::toString).orElse("Not found");
-        } else {
+            return opService.getBook(id, Book::toString).orElse("Not found");
+        } else if (CMD_COMMENT.equalsIgnoreCase(entity)) {
+            return opService.getComment(id, Comment::toString).orElse("Not found");
+        } else  {
             throw new IllegalArgumentException("Unknown entity: "+entity);
         }
     }
 
-    @ShellMethod(value = "Create book", key = "create book")
+    @ShellMethod(value = "Create book (name, genre author)", key = "create book")
     public int  createBook(String name, int genreId, int authorId) {
-        return bookRepository.createBook(new Book(name, genreId, authorId));
+        return opService.createBook(name, genreId, authorId);
     }
 
     @ShellMethod(value = "Create author", key = "create author")
     public int createAuthor(String name) {
-        return authorRepository.createAuthor(new Author(name));
+        return opService.createAuthor(name);
     }
 
     @ShellMethod(value = "Create genre", key = "create genre")
-    public int createGnere(String name) {
-        return genreDao.createGenre(new Genre(name));
+    public int createGenre(String name) {
+        return opService.createGenre(name);
+    }
+
+    @ShellMethod(value = "Create comment (text, book)", key = "create comment")
+    public int createComment(String name, int bookId) {
+        return opService.createComment(name, bookId);
     }
 }
