@@ -20,7 +20,7 @@ public class BookRepositoryImpl implements BookRepository {
 
     @Override
     public Optional<Book> getBook(int id) {
-            return Optional.of(em.find(Book.class, id));
+            return Optional.ofNullable(em.find(Book.class, id));
     }
 
     @Override

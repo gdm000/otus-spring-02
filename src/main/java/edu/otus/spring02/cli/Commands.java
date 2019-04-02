@@ -22,6 +22,7 @@ public class Commands {
     public static final String CMD_BOOK = "book";
     public static final String CMD_GENRE = "genre";
     public static final String CMD_COMMENT = "comment";
+    public static final String NOT_FOUND = "Not found";
 
     @ShellMethod("list available entities")
     public List<String> list(@ShellOption String entity, @ShellOption(defaultValue = "") String subsetId) {
@@ -45,13 +46,13 @@ public class Commands {
     @ShellMethod("get entity")
     public String get(@ShellOption String entity, @ShellOption int id) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
-            return opService.getAuthor(id, Author::toString).orElse("Not found");
+            return opService.getAuthor(id, Author::toString).orElse(NOT_FOUND);
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
-            return opService.getGenre(id, Genre::toString).orElse("Not found");
+            return opService.getGenre(id, Genre::toString).orElse(NOT_FOUND);
         } else if (CMD_BOOK.equalsIgnoreCase(entity)) {
-            return opService.getBook(id, Book::toString).orElse("Not found");
+            return opService.getBook(id, Book::toString).orElse(NOT_FOUND);
         } else if (CMD_COMMENT.equalsIgnoreCase(entity)) {
-            return opService.getComment(id, Comment::toString).orElse("Not found");
+            return opService.getComment(id, Comment::toString).orElse(NOT_FOUND);
         } else  {
             throw new IllegalArgumentException("Unknown entity: "+entity);
         }

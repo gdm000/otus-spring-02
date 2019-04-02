@@ -13,6 +13,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.PostConstruct;
 
+import static edu.otus.spring02.cli.Commands.NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(properties = {
@@ -47,9 +48,13 @@ public class ApplicationTest {
     @Test
     public void testGet() throws Exception {
         assertThat(commands.get(Commands.CMD_AUTHOR, 2)).contains("Author2");
+        assertThat(commands.get(Commands.CMD_AUTHOR, 20)).isEqualTo(NOT_FOUND);
         assertThat(commands.get(Commands.CMD_GENRE, 2)).contains("Genre2");
+        assertThat(commands.get(Commands.CMD_GENRE, 20)).isEqualTo(NOT_FOUND);
         assertThat(commands.get(Commands.CMD_BOOK, 2)).contains("Book2");
+        assertThat(commands.get(Commands.CMD_BOOK, 20)).isEqualTo(NOT_FOUND);
         assertThat(commands.get(Commands.CMD_COMMENT, 2)).contains("Comment2");
+        assertThat(commands.get(Commands.CMD_COMMENT, 20)).isEqualTo(NOT_FOUND);
     }
 
     @Test

@@ -20,7 +20,7 @@ public class GenreRepositoryImpl implements GenreRepository {
 
     @Override
     public Optional<Genre> getGenre(int id) {
-            return Optional.of(em.find(Genre.class, id));
+            return Optional.ofNullable(em.find(Genre.class, id));
 
     }
 

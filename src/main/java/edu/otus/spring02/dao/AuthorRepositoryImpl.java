@@ -26,7 +26,7 @@ public class AuthorRepositoryImpl implements AuthorRepository {
 
     @Override
     public Optional<Author> getAuthor(int id) {
-        return Optional.of(em.find(Author.class, id));
+        return Optional.ofNullable(em.find(Author.class, id));
     }
 
     @Override

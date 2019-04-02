@@ -26,7 +26,7 @@ public class CommentRepositoryImpl implements CommentRepository {
 
     @Override
     public Optional<Comment> getComment(int id) {
-        return Optional.of(em.find(Comment.class, id));
+        return Optional.ofNullable(em.find(Comment.class, id));
     }
 
     @Override
