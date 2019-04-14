@@ -22,15 +22,4 @@ public class Author {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(mappedBy = "author")
-    private List<Book> books;
-
-    @Override
-    public String toString() {
-        return "Author{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", books=count: " + books.size() +
-                '}';
-    }
 }

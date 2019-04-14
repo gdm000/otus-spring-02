@@ -1,14 +1,9 @@
 package edu.otus.spring02.dao;
 
 import edu.otus.spring02.domain.Book;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
-public interface BookRepository {
-    List<Book> getBooks();
-
-    Optional<Book> getBook(int id);
-
-    int createBook(Book prototype);
+@Repository
+public interface BookRepository extends CrudRepository<Book, Integer> {
 }

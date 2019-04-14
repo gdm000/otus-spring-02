@@ -36,7 +36,7 @@ public class ApplicationTest {
 
 
     @Test
-    public void testList() throws Exception {
+    public void testList() {
         assertThat(commands.list(Commands.CMD_AUTHOR, "")).hasSize(2).allMatch(s-> s.matches(".*Author(1|2).*"));
         assertThat(commands.list(Commands.CMD_GENRE, "")).hasSize(2).allMatch(s-> s.matches(".*Genre(1|2).*"));
         assertThat(commands.list(Commands.CMD_BOOK, "")).hasSize(2).allMatch(s-> s.matches(".*Book(1|2).*"));
@@ -46,7 +46,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testGet() throws Exception {
+    public void testGet() {
         assertThat(commands.get(Commands.CMD_AUTHOR, 2)).contains("Author2");
         assertThat(commands.get(Commands.CMD_AUTHOR, 20)).isEqualTo(NOT_FOUND);
         assertThat(commands.get(Commands.CMD_GENRE, 2)).contains("Genre2");
@@ -58,7 +58,7 @@ public class ApplicationTest {
     }
 
     @Test
-    public void testCreate() throws Exception {
+    public void testCreate() {
         int aId = commands.createAuthor("AuthorTest");
         assertThat(commands.get(Commands.CMD_AUTHOR, aId).contains("AuthorTest"));
         int gId = commands.createGenre("GenreTest");

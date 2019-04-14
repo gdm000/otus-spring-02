@@ -22,11 +22,11 @@ public class Book {
     @Column(name = "name")
     private String name;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "genre_id", nullable = false)
     private Genre genre;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "author_id", nullable = false)
     private Author author;
 
