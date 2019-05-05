@@ -14,16 +14,16 @@ public interface OperationsService {
     <T> List<T> getBooks(Function<Book, T> mapper);
     <T> List<T>  getGenres(Function<Genre, T> mapper);
     <T> List<T>  getComments(Function<Comment, T> mapper);
-    <T> List<T>  getComments(int bookId, Function<Comment, T> mapper);
+    <T> List<T>  getComments(String bookId, Function<Comment, T> mapper);
 
-    <T> Optional<T> getAuthor(int id, Function<Author, T> mapper);
-    <T> Optional<T> getBook(int id, Function<Book, T> mapper);
-    <T> Optional<T> getGenre(int id, Function<Genre, T> mapper);
-    <T> Optional<T> getComment(int id, Function<Comment, T> mapper);
+    <T> Optional<T> getAuthor(String id, Function<Author, T> mapper);
+    <T> Optional<T> getBook(String id, Function<Book, T> mapper);
+    <T> Optional<T> getGenre(String id, Function<Genre, T> mapper);
+    <T> Optional<T> getComment(String id, Function<Comment, T> mapper);
 
-    int createAuthor(String name);
-    int createGenre(String name);
-    int createBook(String name, int authorId, int genreId);
-    int createComment(String text, int bookId);
+    String createAuthor(String name);
+    String createGenre(String name, String description);
+    String createBook(String name, String authorId, String genreId);
+    String createComment(String text, String bookId);
 
 }

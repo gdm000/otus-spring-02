@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.shell.jline.InteractiveShellApplicationRunner;
 import org.springframework.shell.jline.ScriptShellApplicationRunner;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.annotation.PostConstruct;
@@ -21,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         InteractiveShellApplicationRunner.SPRING_SHELL_INTERACTIVE_ENABLED + "=false",
         ScriptShellApplicationRunner.SPRING_SHELL_SCRIPT_ENABLED + "=false"
 })
-@Sql(scripts={"classpath:schema.sql", "classpath:testData.sql"})
+
         @ExtendWith(SpringExtension.class)
 public class ApplicationTest {
     @Autowired
@@ -47,25 +46,25 @@ public class ApplicationTest {
 
     @Test
     public void testGet() {
-        assertThat(commands.get(Commands.CMD_AUTHOR, 2)).contains("Author2");
-        assertThat(commands.get(Commands.CMD_AUTHOR, 20)).isEqualTo(NOT_FOUND);
-        assertThat(commands.get(Commands.CMD_GENRE, 2)).contains("Genre2");
-        assertThat(commands.get(Commands.CMD_GENRE, 20)).isEqualTo(NOT_FOUND);
-        assertThat(commands.get(Commands.CMD_BOOK, 2)).contains("Book2");
-        assertThat(commands.get(Commands.CMD_BOOK, 20)).isEqualTo(NOT_FOUND);
-        assertThat(commands.get(Commands.CMD_COMMENT, 2)).contains("Comment2");
-        assertThat(commands.get(Commands.CMD_COMMENT, 20)).isEqualTo(NOT_FOUND);
+        assertThat(commands.get(Commands.CMD_AUTHOR, "2")).contains("Author2");
+        assertThat(commands.get(Commands.CMD_AUTHOR, "20")).isEqualTo(NOT_FOUND);
+        assertThat(commands.get(Commands.CMD_GENRE, "Genre2")).contains("Genre2");
+        assertThat(commands.get(Commands.CMD_GENRE, "20")).isEqualTo(NOT_FOUND);
+        assertThat(commands.get(Commands.CMD_BOOK, "2")).contains("Book2");
+        assertThat(commands.get(Commands.CMD_BOOK, "20")).isEqualTo(NOT_FOUND);
+        assertThat(commands.get(Commands.CMD_COMMENT, "2")).contains("Comment2");
+        assertThat(commands.get(Commands.CMD_COMMENT, "20")).isEqualTo(NOT_FOUND);
     }
 
     @Test
     public void testCreate() {
-        int aId = commands.createAuthor("AuthorTest");
+        String aId = commands.createAuthor("AuthorTest");
         assertThat(commands.get(Commands.CMD_AUTHOR, aId).contains("AuthorTest"));
-        int gId = commands.createGenre("GenreTest");
+        String gId = commands.createGenre("GenreTest", "GenreDescription");
         assertThat(commands.get(Commands.CMD_GENRE, gId).contains("GenreTest"));
-        int bId = commands.createBook("BookTest", gId, aId);
+        String bId = commands.createBook("BookTest", gId, aId);
         assertThat(commands.get(Commands.CMD_BOOK, bId).contains("BookTest"));
-        int cId = commands.createComment("CommentTest", bId);
+        String cId = commands.createComment("CommentTest", bId);
         assertThat(commands.get(Commands.CMD_COMMENT, cId).contains("CommentTest"));
         assertThat(commands.list(Commands.CMD_COMMENT, bId+"")).hasSize(1).allMatch(s-> s.matches(".*CommentTest.*"));
     }

@@ -36,7 +36,7 @@ public class Commands {
             if (subsetId.isEmpty()) {
                 return opService.getComments(Object::toString);
             } else {
-                return opService.getComments(Integer.parseInt(subsetId), Object::toString);
+                return opService.getComments(subsetId, Object::toString);
             }
         } else {
             throw new IllegalArgumentException("Unknown entity: "+entity);
@@ -44,7 +44,7 @@ public class Commands {
     }
 
     @ShellMethod("get entity")
-    public String get(@ShellOption String entity, @ShellOption int id) {
+    public String get(@ShellOption String entity, @ShellOption String id) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
             return opService.getAuthor(id, Author::toString).orElse(NOT_FOUND);
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
@@ -59,22 +59,22 @@ public class Commands {
     }
 
     @ShellMethod(value = "Create book (name, genre author)", key = "create book")
-    public int  createBook(String name, int genreId, int authorId) {
-        return opService.createBook(name, genreId, authorId);
+    public String  createBook(String name, String genreId, String authorId) {
+        return opService.createBook(name, authorId, genreId);
     }
 
     @ShellMethod(value = "Create author", key = "create author")
-    public int createAuthor(String name) {
+    public String createAuthor(String name) {
         return opService.createAuthor(name);
     }
 
     @ShellMethod(value = "Create genre", key = "create genre")
-    public int createGenre(String name) {
-        return opService.createGenre(name);
+    public String createGenre(String name, String description) {
+        return opService.createGenre(name, description);
     }
 
     @ShellMethod(value = "Create comment (text, book)", key = "create comment")
-    public int createComment(String name, int bookId) {
+    public String createComment(String name, String bookId) {
         return opService.createComment(name, bookId);
     }
 }

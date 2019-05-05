@@ -52,49 +52,49 @@ public class OperationsServiceImpl implements OperationsService {
 
     @Transactional
     @Override
-    public <T> List<T> getComments(int bookId, Function<Comment, T> mapper) {
-        return StreamSupport.stream(commentRepository.findByBookId(bookId).spliterator(), false).map(mapper).collect(Collectors.toList());
+    public <T> List<T> getComments(String bookId, Function<Comment, T> mapper) {
+        return bookRepository.findById(bookId).map(Book::getComments).get().stream().map(mapper).collect(Collectors.toList());
     }
 
     @Transactional
     @Override
-    public <T> Optional<T> getAuthor(int id, Function<Author, T> mapper) {
+    public <T> Optional<T> getAuthor(String id, Function<Author, T> mapper) {
         return authorRepository.findById(id).map(mapper);
     }
 
     @Transactional
     @Override
-    public <T> Optional<T> getBook(int id, Function<Book, T> mapper) {
+    public <T> Optional<T> getBook(String id, Function<Book, T> mapper) {
         return bookRepository.findById(id).map(mapper);
     }
 
     @Transactional
     @Override
-    public <T> Optional<T> getGenre(int id, Function<Genre, T> mapper) {
+    public <T> Optional<T> getGenre(String id, Function<Genre, T> mapper) {
         return genreRepository.findById(id).map(mapper);
     }
 
     @Transactional
     @Override
-    public <T> Optional<T> getComment(int id, Function<Comment, T> mapper) {
+    public <T> Optional<T> getComment(String id, Function<Comment, T> mapper) {
         return commentRepository.findById(id).map(mapper);
     }
 
     @Transactional
     @Override
-    public int createAuthor(String name) {
+    public String createAuthor(String name) {
         return authorRepository.save(Author.builder().name(name).build()).getId();
     }
 
     @Transactional
     @Override
-    public int createGenre(String name) {
-        return genreRepository.save(Genre.builder().name(name).build()).getId();
+    public String createGenre(String name, String description) {
+        return genreRepository.save(Genre.builder().name(name).build()).getName();
     }
 
     @Transactional
     @Override
-    public int createBook(String name, int authorId, int genreId) {
+    public String createBook(String name, String authorId, String genreId) {
         return bookRepository.save(
                 Book.builder()
                         .name(name)
@@ -105,7 +105,11 @@ public class OperationsServiceImpl implements OperationsService {
 
     @Transactional
     @Override
-    public int createComment(String text, int bookId) {
-        return commentRepository.save(Comment.builder().text(text).book(getBook(bookId, Function.identity()).get()).build()).getId();
+    public String createComment(String text, String bookId) {
+        Comment comment = Comment.builder().text(text).build();
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Book not found"));
+        book.getComments().add(comment);
+        book = bookRepository.save(book);
+        return book.getComments().get(book.getComments().indexOf(comment)).getId();
     }
 }

@@ -4,34 +4,32 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Document
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    private String id;
 
-    @Column(name = "name")
     private String name;
 
-    @OneToOne
-    @JoinColumn(name = "genre_id", nullable = false)
+    @DBRef
     private Genre genre;
 
-    @OneToOne
-    @JoinColumn(name = "author_id", nullable = false)
+    @DBRef
     private Author author;
 
-    @OneToMany(mappedBy = "book")
-    private List<Comment> comments;
+    @DBRef
+    private List<Comment> comments = new ArrayList<>();
 
     @Override
     public String toString() {
