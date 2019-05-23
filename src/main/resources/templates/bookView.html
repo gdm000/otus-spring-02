@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Book info</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .comments, .comments td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1 th:text="'Book:' + ${book.id}">BookId</h1>
+<h2 th:text="'Name:' + ${book.name}">BookName</h2>
+<h2 th:text="'Author:' + ${book.author.name}">BookAuthor</h2>
+<h2 th:text="'Genre:' + ${book.genre.name}">BookGenre</h2>
+<h2>Comments:</h2>
+<table class="comments">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody th:if="${book.comments != null}">
+    <tr th:each="comment : ${book.comments}">
+        <td th:text="${comment.id}">1</td>
+        <td th:text="${comment.text}">Comment text</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,10 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  data:
+    mongodb:
+      uri: mongodb://localhost:32768/test
+      port: 32768
+      database: test
+changelogs_package: edu.otus.spring02.changelogs
