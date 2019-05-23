@@ -26,4 +26,8 @@ public interface OperationsService {
     String createBook(String name, String authorId, String genreId);
     String createComment(String text, String bookId);
 
+    <T> T updateBook(String id, String name, String authorId, String genreId, Function<Book, T> mapper);
+
+    void deleteBook(String bookId);
+
 }

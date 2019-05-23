@@ -112,4 +112,20 @@ public class OperationsServiceImpl implements OperationsService {
         book = bookRepository.save(book);
         return book.getComments().get(book.getComments().indexOf(comment)).getId();
     }
+
+    @Override
+    public <T> T updateBook(String bookId, String name, String authorId, String genreId, Function<Book, T> mapper) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Book not found"));
+        Author author = authorRepository.findById(authorId).orElseThrow(() -> new IllegalArgumentException("Author not found"));
+        Genre genre = genreRepository.findById(genreId).orElseThrow(() -> new IllegalArgumentException("Genre not found"));
+        book.setName(name);
+        book.setAuthor(author);
+        book.setGenre(genre);
+        return mapper.apply(bookRepository.save(book));
+    }
+
+    @Override
+    public void deleteBook(String bookId) {
+        bookRepository.deleteById(bookId);
+    }
 }

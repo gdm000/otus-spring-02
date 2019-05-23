@@ -26,7 +26,7 @@ public class InitMongoDBDataChangeLog {
     private Book classicBook = Book.builder().genre(classicGenre).author(classicAuthor).name("Eugene Onegin").comments(
             Arrays.asList(classicComment1, classicComment2)
     ).build();
-    private Book sciFiBook = Book.builder().genre(sciFiGenre).author(classicAuthor).name("Eugene Onegin").build();
+    private Book sciFiBook = Book.builder().genre(sciFiGenre).author(sciFiAuthor).name("Stranger in a Strange Land").build();
 
     @ChangeSet(order = "000", id = "dropDB", author = "pankrashkinvs", runAlways = true)
     public void dropDB(MongoDatabase database){

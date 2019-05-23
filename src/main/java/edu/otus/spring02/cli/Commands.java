@@ -77,4 +77,10 @@ public class Commands {
     public String createComment(String name, String bookId) {
         return opService.createComment(name, bookId);
     }
+
+    @ShellMethod(value = "Delete book with comments", key = "delete book")
+    public String deleteBook(String bookId) {
+        opService.deleteBook(bookId);
+        return "No more book with id " + bookId;
+    }
 }
