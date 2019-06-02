@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all books</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .persons, .persons td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="webjars/vue/2.5.16/vue.min.js"></script>
+</head>
+<body>
+<h1>Books:</h1>
+
+<table class="persons"  id="books-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Genre</th>
+        <th>Comments</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="book in books">
+        <td>{{ book.id }}</td>
+        <td>{{ book.name }}</td>
+        <td>{{ book.genre.name }}</td>
+        <td>{{ book.comments.length }}</td>
+        <td>
+            <a :href="`/bookView.html?id=${book.id}`">View</a>
+            <a :href="`/bookEdit.html?id=${book.id}`">Edit</a>
+            <a :href="`/books/delete/${book.id}`">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a href="/bookCreate.html">Create book</a>
+<script>
+    // fetch, ES6, Vue
+    fetch('/books')
+        .then(response => response.json())
+        .then(books => {
+            new Vue({
+                el: '#books-table',
+                data: {
+                    books: books
+                }
+            })
+        });
+</script>
+</body>
+</html>
