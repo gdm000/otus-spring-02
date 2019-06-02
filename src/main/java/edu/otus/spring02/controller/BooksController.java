@@ -1,94 +1,60 @@
 package edu.otus.spring02.controller;
 
 import edu.otus.spring02.domain.Book;
-import edu.otus.spring02.domain.Genre;
-import edu.otus.spring02.service.OperationsService;
+import edu.otus.spring02.service.BooksService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
-@Controller
+@RestController
 @Slf4j
 public class BooksController {
-    private final OperationsService opService;
+    private final BooksService booksService;
 
     @Autowired
-    public BooksController(OperationsService ops) {
-        this.opService = ops;
+    public BooksController(BooksService ops) {
+        this.booksService = ops;
     }
 
     @GetMapping("books")
-    public String listPage(Model model) {
-        List<Book> books = opService.getBooks(Function.identity());
-        model.addAttribute("books", books);
-        return "booksList";
+    public List<Book> getBooksList() {
+        return booksService.getBooks(Function.identity());
     }
 
     @GetMapping("books/{id}")
-    public String viewPage(Model model, @PathVariable("id") String id) {
-        Book book = opService.getBook(id, Function.identity()).orElse(null);
-        if (book == null) {
-            return "redirect:/books";
-        } else {
-            model.addAttribute("book", book);
-            return "bookView";
-        }
+    public Book getBook(@PathVariable("id") String id) {
+        return booksService.getBook(id, Function.identity()).orElse(null);
     }
 
     @GetMapping("books/delete/{id}")
-    public String deletePage( @PathVariable("id") String id) {
-        opService.deleteBook(id);
-        return "redirect:/books";
-    }
-
-    @GetMapping("books/edit/{id}")
-    public String editPage(Model model, @PathVariable("id") String id) {
-        Book book = opService.getBook(id, Function.identity()).orElse(null);
-        if (book == null) {
-            return "redirect:/books";
-        } else {
-            model.addAttribute("book", book);
-            model.addAttribute("genres", opService.getGenres(Function.identity()));
-            model.addAttribute("authors", opService.getAuthors(Function.identity()));
-            return "bookEdit";
-        }
-    }
-
-    @GetMapping("books/create")
-    public String createPage(Model model) {
-            model.addAttribute("genres", opService.getGenres(Function.identity()));
-            model.addAttribute("authors", opService.getAuthors(Function.identity()));
-            return "bookCreate";
+    public RedirectView deletePage( @PathVariable("id") String id) {
+        booksService.deleteBook(id);
+        return new RedirectView("/booksList.html");
     }
 
     @PostMapping("books/save/{id}")
-    public String save(@PathVariable("id") String id, @RequestParam("name") String name, @RequestParam("genre_id") String genreId, @RequestParam("author_id") String authorId) {
+    public RedirectView save(@PathVariable("id") String id, @RequestParam("name") String name, @RequestParam("genre_id") String genreId, @RequestParam("author_id") String authorId){
         try {
-            opService.updateBook(id, name, authorId, genreId, Function.identity());
+            booksService.updateBook(id, name, authorId, genreId, Function.identity());
         } catch (Exception e) {
             log.error("Failed to update book {}", id, e);
         } finally {
-            return "redirect:/books";
+            return new RedirectView("/booksList.html");
         }
     }
 
     @PostMapping("books/create")
-    public String editCreate(@RequestParam("name") String name, @RequestParam("genre_id") String genreId, @RequestParam("author_id") String authorId) {
+    public RedirectView create(@RequestParam("name") String name, @RequestParam("genre_id") String genreId, @RequestParam("author_id") String authorId) {
         try {
-            opService.createBook(name, authorId, genreId);
+            booksService.createBook(name, authorId, genreId);
         } catch (Exception e) {
             log.error("Failed to create book", e);
         } finally {
-            return "redirect:/books";
+            return new RedirectView("/booksList.html");
         }
     }
 }

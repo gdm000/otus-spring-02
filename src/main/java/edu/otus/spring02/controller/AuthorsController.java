@@ -1,28 +1,33 @@
 package edu.otus.spring02.controller;
 
 import edu.otus.spring02.domain.Author;
-import edu.otus.spring02.service.OperationsService;
+import edu.otus.spring02.service.AuthorsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.function.Function;
 
-@Controller
+@RestController
 public class AuthorsController {
-    private final OperationsService opService;
+    private final AuthorsService authorsService;
 
     @Autowired
-    public AuthorsController(OperationsService ops) {
-        this.opService = ops;
+    public AuthorsController(AuthorsService ops) {
+        this.authorsService = ops;
+    }
+
+    //@GetMapping("authors")
+    public String listPage(Model model) {
+        List<Author> authors = authorsService.getAuthors(Function.identity());
+        model.addAttribute("authors", authors);
+        return "authorsList";
     }
 
     @GetMapping("authors")
-    public String listPage(Model model) {
-        List<Author> authors = opService.getAuthors(Function.identity());
-        model.addAttribute("authors", authors);
-        return "authorsList";
+    public List<Author> getAuthorsList() {
+        return authorsService.getAuthors(Function.identity());
     }
 }

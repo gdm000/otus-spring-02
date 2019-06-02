@@ -1,7 +1,10 @@
 package edu.otus.spring02;
 
 import edu.otus.spring02.cli.Commands;
-import edu.otus.spring02.service.OperationsService;
+import edu.otus.spring02.service.AuthorsService;
+import edu.otus.spring02.service.BooksService;
+import edu.otus.spring02.service.CommentsService;
+import edu.otus.spring02.service.GenresService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +27,22 @@ import static org.assertj.core.api.Assertions.assertThat;
         @ExtendWith(SpringExtension.class)
 public class ApplicationTest {
     @Autowired
-    OperationsService operationsService;
+    AuthorsService authorsService;
+
+    @Autowired
+    GenresService genresService;
+
+    @Autowired
+    BooksService booksService;
+
+    @Autowired
+    CommentsService commentsService;
 
     Commands commands;
 
     @PostConstruct
     public void before() {
-        commands = new Commands(operationsService);
+        commands = new Commands(authorsService, genresService, booksService, commentsService);
     }
 
 
