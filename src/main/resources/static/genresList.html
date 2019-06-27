@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all genres</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .genres, .genres td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="webjars/vue/2.5.16/vue.min.js"></script>
+
+</head>
+<body>
+<h1>Genres:</h1>
+
+<table class="genres" id="genres-table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="genre in genres">
+        <td>{{ genre.name }}</td>
+        <td>{{ genre.description }}</td>
+    </tr>
+    </tbody>
+    </tbody>
+</table>
+<script>
+    // fetch, ES6, Vue
+    fetch('/genres')
+        .then(response => response.json())
+        .then(genres => {
+            new Vue({
+                el: '#genres-table',
+                data: {
+                    genres: genres
+                }
+            })
+        });
+</script>
+</body>
+</html>
