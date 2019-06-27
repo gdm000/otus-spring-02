@@ -1,13 +1,13 @@
 package edu.otus.spring02.service;
 
 import edu.otus.spring02.domain.Author;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 public interface AuthorsService {
-    <T> List<T> getAuthors(Function<Author, T> mapper);
-    <T> Optional<T> getAuthor(String id, Function<Author, T> mapper);
-    String createAuthor(String name);
+    <T> Flux<T> getAuthors(Function<Author, T> mapper);
+    <T> Mono<T> getAuthor(String id, Function<Author, T> mapper);
+    Mono<String> createAuthor(String name);
 }

@@ -3,15 +3,17 @@ package edu.otus.spring02.events;
 import edu.otus.spring02.dao.BookRepository;
 import edu.otus.spring02.dao.CommentRepository;
 import edu.otus.spring02.domain.Book;
+import edu.otus.spring02.domain.Comment;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener;
 import org.springframework.data.mongodb.core.mapping.event.BeforeDeleteEvent;
 import org.springframework.stereotype.Component;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
 
-import javax.swing.text.html.Option;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -25,10 +27,11 @@ public class MongoBookCascadeDeleteEventsListener extends AbstractMongoEventList
         super.onBeforeDelete(event);
         val source = event.getSource();
         val id = source.get("_id").toString();
-        bookRepository.findById(id).ifPresent(book ->
-            Optional.ofNullable(book.getComments())
-                    .map(comments -> comments.stream())
-                    .ifPresent(cStream -> cStream.forEach(comment -> commentRepository.delete(comment)))
-        );
+        bookRepository.findById(id)
+                .map(Book::getComments)
+                .map(comments -> comments == null ? new ArrayList<Comment>(): comments)
+                .flatMapIterable(Function.identity())
+                .flatMap(comment -> commentRepository.delete(comment))
+                .publishOn(Schedulers.single()).subscribe();
     }
 }

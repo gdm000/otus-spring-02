@@ -33,16 +33,16 @@ public class Commands {
     @ShellMethod("list available entities")
     public List<String> list(@ShellOption String entity, @ShellOption(defaultValue = "") String subsetId) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
-            return authorsService.getAuthors(Object::toString);
+            return authorsService.getAuthors(Object::toString).collectList().block();
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
-            return genresService.getGenres(Object::toString);
+            return genresService.getGenres(Object::toString).collectList().block();
         } else if (CMD_BOOK.equalsIgnoreCase(entity)) {
-            return booksService.getBooks(Object::toString);
+            return booksService.getBooks(Object::toString).collectList().block();
         } else if (CMD_COMMENT.equalsIgnoreCase(entity)) {
             if (subsetId.isEmpty()) {
-                return commentsService.getComments(Object::toString);
+                return commentsService.getComments(Object::toString).collectList().block();
             } else {
-                return commentsService.getComments(subsetId, Object::toString);
+                return commentsService.getComments(subsetId, Object::toString).collectList().block();
             }
         } else {
             throw new IllegalArgumentException("Unknown entity: "+entity);
@@ -52,13 +52,13 @@ public class Commands {
     @ShellMethod("get entity")
     public String get(@ShellOption String entity, @ShellOption String id) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
-            return authorsService.getAuthor(id, Author::toString).orElse(NOT_FOUND);
+            return authorsService.getAuthor(id, Author::toString).blockOptional().orElse(NOT_FOUND);
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
-            return genresService.getGenre(id, Genre::toString).orElse(NOT_FOUND);
+            return genresService.getGenre(id, Genre::toString).blockOptional().orElse(NOT_FOUND);
         } else if (CMD_BOOK.equalsIgnoreCase(entity)) {
-            return booksService.getBook(id, Book::toString).orElse(NOT_FOUND);
+            return booksService.getBook(id, Book::toString).blockOptional().orElse(NOT_FOUND);
         } else if (CMD_COMMENT.equalsIgnoreCase(entity)) {
-            return commentsService.getComment(id, Comment::toString).orElse(NOT_FOUND);
+            return commentsService.getComment(id, Comment::toString).blockOptional().orElse(NOT_FOUND);
         } else  {
             throw new IllegalArgumentException("Unknown entity: "+entity);
         }
@@ -66,22 +66,22 @@ public class Commands {
 
     @ShellMethod(value = "Create book (name, genre author)", key = "create book")
     public String  createBook(String name, String genreId, String authorId) {
-        return booksService.createBook(name, authorId, genreId);
+        return booksService.createBook(name, authorId, genreId).block();
     }
 
     @ShellMethod(value = "Create author", key = "create author")
     public String createAuthor(String name) {
-        return authorsService.createAuthor(name);
+        return authorsService.createAuthor(name).block();
     }
 
     @ShellMethod(value = "Create genre", key = "create genre")
     public String createGenre(String name, String description) {
-        return genresService.createGenre(name, description);
+        return genresService.createGenre(name, description).block();
     }
 
     @ShellMethod(value = "Create comment (text, book)", key = "create comment")
     public String createComment(String name, String bookId) {
-        return commentsService.createComment(name, bookId);
+        return commentsService.createComment(name, bookId).block();
     }
 
     @ShellMethod(value = "Delete book with comments", key = "delete book")

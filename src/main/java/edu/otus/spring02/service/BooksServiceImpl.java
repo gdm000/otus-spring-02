@@ -8,13 +8,10 @@ import edu.otus.spring02.domain.Book;
 import edu.otus.spring02.domain.Genre;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -25,43 +22,40 @@ public class BooksServiceImpl implements BooksService {
     private final AuthorsService authorsService;
     private final GenresService genresService;
 
-    @Transactional
     @Override
-    public <T> List<T> getBooks(Function<Book, T> mapper) {
-        return StreamSupport.stream(bookRepository.findAll().spliterator(), false).map(mapper).collect(Collectors.toList());
+    public <T> Flux<T> getBooks(Function<Book, T> mapper) {
+        return bookRepository.findAll().map(mapper);
     }
 
-    @Transactional
     @Override
-    public <T> Optional<T> getBook(String id, Function<Book, T> mapper) {
+    public <T> Mono<T> getBook(String id, Function<Book, T> mapper) {
         return bookRepository.findById(id).map(mapper);
     }
 
-    @Transactional
     @Override
-    public String createBook(String name, String authorId, String genreId) {
-        return bookRepository.save(
-                Book.builder()
-                        .name(name)
-                        .author(authorsService.getAuthor(authorId, Function.identity()).get())
-                        .genre(genresService.getGenre(genreId, Function.identity()).get())
-                        .build()).getId();
-    }
-
-
-    @Override
-    public <T> T updateBook(String bookId, String name, String authorId, String genreId, Function<Book, T> mapper) {
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("Book not found"));
-        Author author = authorRepository.findById(authorId).orElseThrow(() -> new IllegalArgumentException("Author not found"));
-        Genre genre = genreRepository.findById(genreId).orElseThrow(() -> new IllegalArgumentException("Genre not found"));
-        book.setName(name);
-        book.setAuthor(author);
-        book.setGenre(genre);
-        return mapper.apply(bookRepository.save(book));
+    public Mono<String> createBook(String name, String authorId, String genreId) {
+        return Mono.just(Book.builder().name(name))
+                .zipWith(authorsService.getAuthor(authorId, Function.identity()), (book, author) -> book.author(author))
+                .zipWith(genresService.getGenre(genreId, Function.identity()), (book, genre) -> book.genre(genre))
+                .flatMap(book-> bookRepository.save(book.build()))
+                .map(Book::getId);
     }
 
     @Override
-    public void deleteBook(String bookId) {
-        bookRepository.deleteById(bookId);
+    public <T> Mono<T> updateBook(String bookId, String name, String authorId, String genreId, Function<Book, T> mapper) {
+        return bookRepository.findById(bookId).switchIfEmpty(Mono.error(new IllegalArgumentException("Book not found")))
+                .doOnNext(book -> book.setName(name))
+                .zipWith(authorRepository.findById(authorId)
+                        .switchIfEmpty(Mono.error(new IllegalArgumentException("Author not found"))),
+                        (book, author) -> {book.setAuthor(author); return book;})
+                .zipWith(genreRepository.findById(genreId)
+                        .switchIfEmpty(Mono.error(new IllegalArgumentException("Genre not found"))),
+                        (book, genre) -> {book.setGenre(genre); return book;})
+                .flatMap(book -> bookRepository.save(book)).map(book -> mapper.apply(book));
+    }
+
+    @Override
+    public Mono<Void> deleteBook(String bookId) {
+        return bookRepository.deleteById(bookId);
     }
 }

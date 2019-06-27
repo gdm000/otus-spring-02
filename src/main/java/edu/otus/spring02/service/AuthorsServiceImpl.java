@@ -5,33 +5,31 @@ import edu.otus.spring02.domain.Author;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
-public class AuthorsServiceImpl implements AuthorsService{
+public class AuthorsServiceImpl implements AuthorsService {
     private final AuthorRepository authorRepository;
 
     @Transactional
     @Override
-    public <T> List<T> getAuthors(Function<Author, T> mapper) {
-        return StreamSupport.stream(authorRepository.findAll().spliterator(), false).map(mapper).collect(Collectors.toList());
+    public <T> Flux<T> getAuthors(Function<Author, T> mapper) {
+        return authorRepository.findAll().map(mapper);
     }
 
     @Transactional
     @Override
-    public <T> Optional<T> getAuthor(String id, Function<Author, T> mapper) {
+    public <T> Mono<T> getAuthor(String id, Function<Author, T> mapper) {
         return authorRepository.findById(id).map(mapper);
     }
 
     @Transactional
     @Override
-    public String createAuthor(String name) {
-        return authorRepository.save(Author.builder().name(name).build()).getId();
+    public Mono<String> createAuthor(String name) {
+        return authorRepository.save(Author.builder().name(name).build()).map(Author::getId);
     }
 }
