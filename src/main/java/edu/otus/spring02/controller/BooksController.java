@@ -30,6 +30,15 @@ public class BooksController {
         return booksService.getBook(id, Function.identity()).orElse(null);
     }
 
+    @GetMapping("books/edit/{id}")
+    public RedirectView editBook(@PathVariable("id") String id) {
+        return new RedirectView("/bookEdit.html?id="+id);
+    }
+
+    @GetMapping("books/create")
+    public RedirectView createBook( ){return new RedirectView("/bookCreate.html");
+    }
+
     @GetMapping("books/delete/{id}")
     public RedirectView deletePage( @PathVariable("id") String id) {
         booksService.deleteBook(id);

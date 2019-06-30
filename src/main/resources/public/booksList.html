@@ -35,13 +35,19 @@
         <td>{{ book.comments.length }}</td>
         <td>
             <a :href="`/bookView.html?id=${book.id}`">View</a>
-            <a :href="`/bookEdit.html?id=${book.id}`">Edit</a>
+            <a :href="`/books/edit/${book.id}`">Edit</a>
             <a :href="`/books/delete/${book.id}`">Delete</a>
         </td>
     </tr>
     </tbody>
 </table>
-<a href="/bookCreate.html">Create book</a>
+<a href="/books/create">Create book</a>
+<h3 style="color: red" id="errorId"></h3>
+<script>
+     if ((new URL(window.location.href)).searchParams.get("error") != null) {
+         document.getElementById("errorId").textContent = "Login failed"
+     }
+</script>
 <script>
     // fetch, ES6, Vue
     fetch('/books')
@@ -55,5 +61,6 @@
             })
         });
 </script>
+
 </body>
 </html>

@@ -8,3 +8,7 @@ spring:
       port: 32768
       database: test
 changelogs_package: edu.otus.spring02.changelogs
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
