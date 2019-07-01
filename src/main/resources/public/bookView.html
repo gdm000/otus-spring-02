@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Book info</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .comments, .comments td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="webjars/vue/2.5.16/vue.min.js"></script>
+</head>
+<body>
+<div id="book-data">
+    <h1>Book: {{ book.id }}</h1>
+    <h1>Name: {{book.name}}</h1>
+    <h1>Author: {{ book.author.name }}</h1>
+    <h1>Genre: {{ book.genre.name }}</h1>
+
+<h2>Comments:</h2>
+<table class="comments">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="comment in book.comments">
+        <td>{{ comment.id }}</td>
+        <td>{{ comment.text }}</td>
+    </tr>
+    </tbody>
+</table>
+</div>
+<script>
+    var fPath = '/books/'+(new URL(window.location.href)).searchParams.get("id")
+    fetch(fPath)
+        .then(response => response.json())
+        .then(book => {
+            new Vue({
+                el: '#book-data',
+                data: {
+                    book: book
+                }
+            })
+        });
+</script>
+</body>
+</html>
