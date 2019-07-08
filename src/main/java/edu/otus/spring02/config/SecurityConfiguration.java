@@ -28,7 +28,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().antMatchers(HttpMethod.GET, "/authors", "/genres", "/books").permitAll()
                 .and()
-                .authorizeRequests().antMatchers( "/books/edit/*", "/books/create", "/books/save/*", "/books/delete/*").authenticated()
+                .authorizeRequests().antMatchers( "/books/edit/*", "/books/save/*", "/books/delete/*").hasRole("ADMIN")
+                .and()
+                .authorizeRequests().antMatchers( "/books/create").hasAnyRole("USER", "ADMIN")
                 .and()
                 .formLogin().defaultSuccessUrl("/booksList.html")
                 .and()
@@ -45,6 +47,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin").password("password").roles("ADMIN");
+                .withUser("admin").password("password").roles("ADMIN", "USER").and()
+        .withUser("user").password("user").roles("USER")
+        ;
     }
 }
