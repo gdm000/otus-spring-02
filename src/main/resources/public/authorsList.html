@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all authors</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .genres, .genres td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+    <script src="webjars/vue/2.5.16/vue.min.js"></script>
+
+</head>
+<body>
+<h1>Authors:</h1>
+
+<table class="authors" id="authors-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="author in authors">
+        <td>{{ author.id }}</td>
+        <td>{{ author.name }}</td>
+    </tr>
+    </tbody>
+</table>
+<script>
+    // fetch, ES6, Vue
+    fetch('/authors')
+        .then(response => response.json())
+        .then(authors => {
+            new Vue({
+                el: '#authors-table',
+                data: {
+                    authors: authors
+                }
+            })
+        });
+</script>
+</body>
+</html>
