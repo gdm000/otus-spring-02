@@ -12,3 +12,18 @@ server:
   servlet:
     session:
       tracking-modes: cookie
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: metrics,info,health,logfile,loggers
+info:
+  app:
+    name: Spring lib application
+    description: Sample application with actuator support
+
+logging:
+  file: log.txt
+  level:
+    root: info
