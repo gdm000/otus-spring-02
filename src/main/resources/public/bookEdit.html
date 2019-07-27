@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Book edit</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+    </style>
+    <script src="webjars/vue/2.5.16/vue.min.js"></script>
+</head>
+<body>
+
+<form :action="`/books/save/${book.id}`" method="post" id="book-edit">
+    Name:<br>
+    <input type="text" name="name" :value="`${book.name}`" value="Name"><br>
+    Genre:<br>
+    <select name="genre_id" v-model="g_selected">
+        <option v-for="genre in genres">
+            {{genre.name}}
+        </option>
+    </select><br>
+    Author:<br>
+    <select name="author_id" v-model="a_selected">
+        <option v-for="author in authors" v-bind:value="author.id">
+            {{author.name}}
+        </option>
+    </select><br>
+    <input type="submit" value="Update">
+</form>
+<script>
+    fetch('/books/'+(new URL(window.location.href)).searchParams.get("id"))
+        .then(response => response.json())
+        .then(book => {
+            fetch('/genres')
+                .then(response => response.json())
+                .then(genres => {
+                    fetch('/authors')
+                        .then(response => response.json())
+                        .then(authors => {
+                            new Vue({
+                                el: '#book-edit',
+                                data: {
+                                    g_selected: book.genre.name,
+                                    a_selected: book.author.id,
+                                    book: book,
+                                    genres: genres,
+                                    authors: authors
+                                }
+                            })
+                        });
+                });
+        });
+</script>
+</body>
+</html>
