@@ -14,10 +14,14 @@ server:
       tracking-modes: cookie
 
 management:
+  endpoint:
+    health:
+      show-details: always
   endpoints:
     web:
       exposure:
         include: metrics,info,health,logfile,loggers
+
 info:
   app:
     name: Spring lib application
