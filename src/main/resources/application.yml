@@ -1,0 +1,33 @@
+spring:
+  h2:
+    console:
+      enabled: true
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/test
+      port: 27017
+      database: test
+changelogs_package: edu.otus.spring02.changelogs
+server:
+  servlet:
+    session:
+      tracking-modes: cookie
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: metrics,info,health,logfile,loggers
+
+info:
+  app:
+    name: Spring lib application
+    description: Sample application with actuator support
+
+logging:
+  file: log.txt
+  level:
+    root: info
