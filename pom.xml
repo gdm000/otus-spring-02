@@ -54,12 +54,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.shell</groupId>
-            <artifactId>spring-shell-starter</artifactId>
-            <version>2.0.1.RELEASE</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit-5.version}</version>
@@ -108,6 +102,7 @@
     </dependencies>
 
     <build>
+        <finalName>libapp</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

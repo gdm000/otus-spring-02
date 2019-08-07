@@ -9,13 +9,9 @@ import edu.otus.spring02.service.BooksService;
 import edu.otus.spring02.service.CommentsService;
 import edu.otus.spring02.service.GenresService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
 
 import java.util.List;
 
-@ShellComponent
 @RequiredArgsConstructor
 public class Commands {
 
@@ -30,8 +26,7 @@ public class Commands {
     public static final String CMD_COMMENT = "comment";
     public static final String NOT_FOUND = "Not found";
 
-    @ShellMethod("list available entities")
-    public List<String> list(@ShellOption String entity, @ShellOption(defaultValue = "") String subsetId) {
+    public List<String> list(String entity, String subsetId) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
             return authorsService.getAuthors(Object::toString);
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
@@ -49,8 +44,7 @@ public class Commands {
         }
     }
 
-    @ShellMethod("get entity")
-    public String get(@ShellOption String entity, @ShellOption String id) {
+    public String get(String entity, String id) {
         if (CMD_AUTHOR.equalsIgnoreCase(entity)) {
             return authorsService.getAuthor(id, Author::toString).orElse(NOT_FOUND);
         } else if (CMD_GENRE.equalsIgnoreCase(entity)) {
@@ -64,27 +58,22 @@ public class Commands {
         }
     }
 
-    @ShellMethod(value = "Create book (name, genre author)", key = "create book")
     public String  createBook(String name, String genreId, String authorId) {
         return booksService.createBook(name, authorId, genreId);
     }
 
-    @ShellMethod(value = "Create author", key = "create author")
     public String createAuthor(String name) {
         return authorsService.createAuthor(name);
     }
 
-    @ShellMethod(value = "Create genre", key = "create genre")
     public String createGenre(String name, String description) {
         return genresService.createGenre(name, description);
     }
 
-    @ShellMethod(value = "Create comment (text, book)", key = "create comment")
     public String createComment(String name, String bookId) {
         return commentsService.createComment(name, bookId);
     }
 
-    @ShellMethod(value = "Delete book with comments", key = "delete book")
     public String deleteBook(String bookId) {
         booksService.deleteBook(bookId);
         return "No more book with id " + bookId;
