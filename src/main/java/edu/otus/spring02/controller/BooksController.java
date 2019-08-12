@@ -48,7 +48,8 @@ public class BooksController {
     @PostMapping("books/save/{id}")
     public RedirectView save(@PathVariable("id") String id, @RequestParam("name") String name, @RequestParam("genre_id") String genreId, @RequestParam("author_id") String authorId){
         try {
-            booksService.updateBook(id, name, authorId, genreId, Function.identity());
+            Book updateResult = booksService.updateBook(id, name, authorId, genreId, Function.identity());
+            log.info("Update result:{}", updateResult);
         } catch (Exception e) {
             log.error("Failed to update book {}", id, e);
         } finally {
@@ -59,7 +60,8 @@ public class BooksController {
     @PostMapping("books/create")
     public RedirectView create(@RequestParam("name") String name, @RequestParam("genre_id") String genreId, @RequestParam("author_id") String authorId) {
         try {
-            booksService.createBook(name, authorId, genreId);
+            String createdBook = booksService.createBook(name, authorId, genreId);
+            log.info("Created book: {}",createdBook);
         } catch (Exception e) {
             log.error("Failed to create book", e);
         } finally {

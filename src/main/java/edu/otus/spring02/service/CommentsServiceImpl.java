@@ -1,5 +1,6 @@
 package edu.otus.spring02.service;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import edu.otus.spring02.dao.BookRepository;
 import edu.otus.spring02.dao.CommentRepository;
 import edu.otus.spring02.domain.Book;
@@ -20,24 +21,28 @@ public class CommentsServiceImpl implements CommentsService {
     private final BookRepository bookRepository;
     private final CommentRepository commentRepository;
 
+    @HystrixCommand
     @Transactional
     @Override
     public <T> List<T> getComments(Function<Comment, T> mapper) {
         return StreamSupport.stream(commentRepository.findAll().spliterator(), false).map(mapper).collect(Collectors.toList());
     }
 
+    @HystrixCommand
     @Transactional
     @Override
     public <T> List<T> getComments(String bookId, Function<Comment, T> mapper) {
         return bookRepository.findById(bookId).map(Book::getComments).get().stream().map(mapper).collect(Collectors.toList());
     }
 
+    @HystrixCommand
     @Transactional
     @Override
     public <T> Optional<T> getComment(String id, Function<Comment, T> mapper) {
         return commentRepository.findById(id).map(mapper);
     }
 
+    @HystrixCommand
     @Transactional
     @Override
     public String createComment(String text, String bookId) {
